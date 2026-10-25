@@ -30,14 +30,38 @@ export function createGoldPumpHttp(cookieHeader: string): AxiosInstance {
   return client;
 }
 
+function cloudflareBlocked(data: unknown, status: number): boolean {
+  if (status === 403 || status === 503) return true;
+  if (typeof data !== "string") return false;
+  return (
+    data.includes("cf-error-details") ||
+    data.includes("Attention Required! | Cloudflare") ||
+    data.includes("Sorry, you have been blocked")
+  );
+}
+
 function assertOk(data: unknown, status: number): void {
+  if (cloudflareBlocked(data, status)) {
+    throw new Error(
+      "Cloudflare blocked requests from this server IP (common on VPS/datacenter hosts). " +
+        "Set GOLDPUMP_PROXY_URL in .env to a residential or ISP proxy, or ask your host to use a clean IP. " +
+        "Your SID can still be valid — the block happens before GoldPump sees it.",
+    );
+  }
   if (status === 420) throw new Error("Not available in your region.");
   if (status === 444) throw new Error("Please reroll your seed.");
   if (data && typeof data === "object" && "error" in data) {
     throw new Error(String((data as { error: unknown }).error));
   }
-  if (typeof data === "string" && data.toLowerCase().includes("error")) {
-    throw new Error(data);
+  if (typeof data === "string") {
+    if (data.trimStart().startsWith("<!DOCTYPE") || data.trimStart().startsWith("<html")) {
+      throw new Error(
+        "GoldPump returned HTML instead of JSON (often Cloudflare). Try a proxy via GOLDPUMP_PROXY_URL.",
+      );
+    }
+    if (data.toLowerCase().includes("error")) {
+      throw new Error(data.length > 300 ? `${data.slice(0, 300)}…` : data);
+    }
   }
 }
 

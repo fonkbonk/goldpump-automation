@@ -42,6 +42,18 @@ npm run dev
 
 Do not commit `.env` or cookies.
 
+**Raw SID (friend-style bots):** paste only the token at `add-account`; default cookie name is `SID`. If DevTools shows a different name, set `GOLDPUMP_SESSION_COOKIE_NAME`.
+
+### VPS and Cloudflare
+
+Many VPS IPs get **“Sorry, you have been blocked”** from Cloudflare before `api.goldpump.com` responds. That is **not** a wrong SID — your server IP is flagged.
+
+Fix options:
+
+1. **`GOLDPUMP_PROXY_URL`** in `.env` — residential or home ISP HTTP(S) proxy (same proxy for `npm run dev`).
+2. **Different host** — run the bot on your home PC, or a provider IP GoldPump allows.
+3. **Friend’s setup** — if their bot uses Puppeteer on a home machine, they avoid datacenter blocks automatically.
+
 ## Configuration
 
 | Variable | Purpose |
