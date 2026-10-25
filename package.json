@@ -1,0 +1,33 @@
+{
+  "name": "goldpump-automation",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Self-hosted GOLDPUMP (goldpump.com) rain automation — CapMonster only, separate from RoRush.",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "node dist/main.js",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "doctor": "tsx scripts/doctor.ts",
+    "test-captcha": "tsx scripts/test-captcha.ts",
+    "add-account": "tsx scripts/add-account.ts",
+    "test-session": "tsx scripts/test-session.ts",
+    "push-github": "bash scripts/push-to-github.sh"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "axios": "^1.20.0",
+    "better-sqlite3": "^13.0.3",
+    "dotenv": "^18.0.9",
+    "https-proxy-agent": "^9.1.0",
+    "socket.io-client": "^4.8.4",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "undici": "^8.12.3",
+    "zod": "^4.6.7"
+  }
+}
