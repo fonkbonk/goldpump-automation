@@ -3,9 +3,11 @@ import { createGoldPumpHttp, loginAuto } from "../src/goldpump/http.js";
 
 const accounts = listAccounts();
 if (!accounts.length) {
-  console.error("No accounts");
+  console.error("No accounts saved yet. Run: npm run add-account");
   process.exit(1);
 }
+
+console.log(`Checking ${accounts.length} account(s)…`);
 
 for (const row of accounts) {
   const http = createGoldPumpHttp(getAccountCookie(row));
