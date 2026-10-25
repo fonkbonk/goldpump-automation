@@ -2,6 +2,7 @@ import readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 import { upsertAccount } from "../src/db/accounts.js";
 import { createGoldPumpHttp, loginAuto } from "../src/goldpump/http.js";
+import { normalizeCookieHeader } from "../src/util/cookie-header.js";
 
 const rl = readline.createInterface({ input, output });
 
@@ -12,9 +13,9 @@ if (!nickname) {
 }
 
 console.log(
-  "\nPaste the Cookie header from goldpump.com (DevTools → Network → any api.goldpump.com request → Cookie).\n",
+  "\nPaste session: full Cookie header, connect.sid=..., or raw SID value (friend bots).\n",
 );
-const cookie = (await rl.question("Cookie: ")).trim();
+const cookie = normalizeCookieHeader((await rl.question("Cookie / SID: ")).trim());
 rl.close();
 
 if (!cookie) {

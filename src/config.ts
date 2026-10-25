@@ -6,9 +6,15 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, "..", ".env") });
 
+/** Blank lines in .env (e.g. CAPMONSTER_API_KEY=) must not fail min(1). */
+function emptyToUndefined(value: unknown): unknown {
+  if (typeof value === "string" && value.trim() === "") return undefined;
+  return value;
+}
+
 const envSchema = z.object({
-  CAPMONSTER_API_KEY: z.string().min(1).optional(),
-  ENCRYPTION_KEY: z.string().min(1).optional(),
+  CAPMONSTER_API_KEY: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
+  ENCRYPTION_KEY: z.preprocess(emptyToUndefined, z.string().min(1).optional()),
   GOLDPUMP_API_BASE: z.string().url().default("https://api.goldpump.com"),
   GOLDPUMP_SITE_URL: z.string().url().default("https://goldpump.com/"),
   GOLDPUMP_TURNSTILE_SITEKEY: z.string().default("0x4AAAAAACLmkLF8v68bkhrE"),

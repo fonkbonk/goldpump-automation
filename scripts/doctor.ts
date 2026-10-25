@@ -13,8 +13,15 @@ console.log("GoldPump automation doctor\n");
 console.log(`.env: ${fs.existsSync(envPath) ? "yes" : "missing (copy .env.example)"}`);
 
 const cfg = loadConfig();
-console.log(`CAPMONSTER_API_KEY: ${cfg.CAPMONSTER_API_KEY ? "set" : "missing"}`);
-console.log(`ENCRYPTION_KEY: ${cfg.ENCRYPTION_KEY ? "set" : "missing"}`);
+const capRaw = process.env.CAPMONSTER_API_KEY;
+if (cfg.CAPMONSTER_API_KEY) {
+  console.log("CAPMONSTER_API_KEY: set");
+} else if (capRaw !== undefined && capRaw.trim() === "") {
+  console.log("CAPMONSTER_API_KEY: empty line in .env (remove it or paste your key)");
+} else {
+  console.log("CAPMONSTER_API_KEY: missing (required for npm run dev / test-captcha, not for test-session)");
+}
+console.log(`ENCRYPTION_KEY: ${cfg.ENCRYPTION_KEY ? "set" : "missing (required after add-account)"}`);
 console.log(`API: ${cfg.GOLDPUMP_API_BASE}`);
 console.log(`Turnstile sitekey: ${cfg.GOLDPUMP_TURNSTILE_SITEKEY}`);
 
